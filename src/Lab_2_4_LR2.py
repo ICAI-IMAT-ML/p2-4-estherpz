@@ -65,9 +65,7 @@ class LinearRegressor:
             None: Modifies the model's coefficients and intercept in-place.
         """
         # Replace this code with the code you did in the previous laboratory session
-        ones = np.ones((X.shape[0], 1))
-        M = np.hstack((ones, X))
-        W = np.dot(np.linalg.inv(np.dot(M.T, M)), np.dot(M.T, y))
+        W = np.dot(np.linalg.inv(np.dot(X.T, X)), np.dot(X.T, y))
         
         # Store the intercept and the coefficients of the model
         self.intercept = W[0]
@@ -97,7 +95,9 @@ class LinearRegressor:
         # Implement gradient descent (TODO)
         for epoch in range(iterations):
 
-            predictions = self.predict(X)
+            #Aqui quitamos el bias de X (columnas de 1s) que hemos añadido para el gradiente, pues queremos seleccionar
+            #las columnas sin el percepto en self.coeficientes (que tiene una dimension de n características)
+            predictions = self.intercept + np.dot(X[:, 1:], self.coefficients)
             error = predictions - y
 
             #Write the gradient values and the updates for the paramenters
@@ -135,9 +135,7 @@ class LinearRegressor:
             predictions = self.intercept + self.coefficients * X
         else:
             # Predict when X is more than one variable
-            #Aqui quitamos el bias de X (columnas de 1s) que hemos añadido para el gradiente, pues queremos seleccionar
-            #las columnas sin el percepto en self.coeficientes (que tiene una dimension de n características)
-            predictions = self.intercept + np.dot(X[:, 1:], self.coefficients)
+            predictions = self.intercept + np.dot(X, self.coefficients)
         return predictions
 
 
